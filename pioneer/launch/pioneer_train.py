@@ -1,29 +1,29 @@
-from typing import Any, Dict
+from typing import Dict, Any
 
+import numpy as np
+import pandas as pd
 import ray
 from gym.wrappers import TimeLimit
 from ray import tune
 from ray.tune.registry import register_env
-import pandas as pd
-import numpy as np
 
-from pioneer.envs.pioneer import PioneerKinematicConfig
-from pioneer.envs.pioneer import PioneerKinematicEnv
+from pioneer.envs.pioneer import PioneerConfig
+from pioneer.envs.pioneer import PioneerEnv
 
 
-def train(results_dir: str,
-          checkpoint_freq: int,
-          num_samples: int,
-          num_workers: int,
-          monitor: bool) -> pd.DataFrame:
+def train_agent(results_dir: str,
+                checkpoint_freq: int,
+                num_samples: int,
+                num_workers: int,
+                monitor: bool) -> pd.DataFrame:
 
-    def prepare_env(env_config: Dict[str, Any]):
-        pioneer_config = PioneerKinematicConfig(
-            award_potential_slope=float(env_config['award_potential_slope']),
-            award_done=float(env_config['award_done']),
-            penalty_step=float(env_config['penalty_step']),
+    def prepare_env(env_config: Dict[str, Any] = None):
+        pioneer_config = PioneerConfig(
+            award_done=env_config['award_done'],
+            award_slope=env_config['award_slope'],
+            penalty_step=env_config['penalty_step']
         )
-        pioneer_env = PioneerKinematicEnv(pioneer_config=pioneer_config)
+        pioneer_env = PioneerEnv(pioneer_config=pioneer_config, debug=True)
         return TimeLimit(pioneer_env, max_episode_steps=500)
 
     register_env('Pioneer-v1', prepare_env)
@@ -51,17 +51,18 @@ def train(results_dir: str,
                            'monitor': monitor,
 
                            'env_config': {
-                               'award_potential_slope': 10.0,
-                               'award_done': 5.0,
-                               'penalty_step': 1 / 100
+                               'award_done': 0,
+                               'award_slope': 3,  # tune.loguniform(1, 10),
+                               'penalty_step': 0
                            },
 
                            'model': {
                                'fcnet_hiddens': [256, 256]
                            },
                            'train_batch_size': 8000,
-                           'entropy_coeff_schedule': tune.sample_from(lambda _: entropy_coeff_schedule(1e-3, 1e-1, 1000000)),
-                           'lr': 2e-5,
+                           # 'entropy_coeff_schedule': [(0, 5e-2), (1000000, 0)],
+                           # 'entropy_coeff_schedule': tune.sample_from(lambda _: entropy_coeff_schedule(1e-3, 1e-1, 1000000)),
+                           'lr': 5e-6,  # tune.loguniform(0.5e-5, 2e-5, base=2.0),
                            'num_sgd_iter': 20,
                            'observation_filter': 'ConcurrentMeanStdFilter'
                        },
@@ -77,8 +78,8 @@ def train(results_dir: str,
 
 
 if __name__ == '__main__':
-    train(results_dir='~/ray_results',
-          checkpoint_freq=10,
-          num_samples=1,
-          num_workers=4,
-          monitor=True)
+    train_agent(results_dir='~/Data/ray_results',
+                checkpoint_freq=10,
+                num_samples=1,
+                num_workers=4,
+                monitor=True)

@@ -8,7 +8,7 @@ import pybullet
 from pybullet_utils import bullet_client
 from pybullet_utils.bullet_client import BulletClient
 
-from pioneer.envs.bullet.bullet_bindings import JointInfo, BodyInfo
+from pioneer.envs.bullet.bullet_bindings import JointInfo, BodyInfo, CameraImage
 from pioneer.envs.bullet.bullet_scene import Scene, Item, Joint, World
 
 Action = TypeVar('Action')
@@ -19,18 +19,30 @@ Observation = TypeVar('Observation')
 class RenderConfig:
     camera_target: Tuple[float, float, float] = (0, 0, 0)
 
-    camera_distance: float = 100.0
+    camera_distance: float = 10.0
 
-    camera_yaw: float = 120.0
+    camera_yaw: float = 135.0
     camera_pitch: float = -30.0
     camera_roll: float = 0.0
 
-    render_width: int = 1280
-    render_height: int = 800
+    render_width: int = 640
+    render_height: int = 400
+
+    debug_position: Tuple[float, float, float] = (-10, -10, 1)
+    debug_color: Tuple[float, float, float] = (255, 0, 0)
+    debug_size: float = 1
 
     projection_fov: float = 30
     projection_near: float = 0.1
-    projection_far: float = 200.0
+    projection_far: float = 40.0
+
+    light_direction: Tuple[float, float, float] = (0, 0, 1)
+    light_color: Tuple[float, float, float] = (1, 1, 1)
+    light_distance: float = 30
+    light_ambient: float = 0.4
+    light_diffuse: float = 0.5
+    light_specular: float = 0.0
+    light_shadows: int = 0
 
 
 @dataclass
@@ -40,7 +52,7 @@ class SimulationConfig:
 
     gravity: float = 0
 
-    self_collision: bool = False
+    self_collision: bool = True
     collision_parent: bool = True
 
     @property
@@ -81,6 +93,7 @@ class BulletEnv(gym.Env, Generic[Action, Observation], ABC):
         self.bullet: Optional[BulletClient] = None
         self.world: Optional[World] = None
         self.scene: Optional[Scene] = None
+        self.debug_id: Optional[int] = None
 
         self.world_index = -1
         self.step_index = 0
@@ -94,6 +107,10 @@ class BulletEnv(gym.Env, Generic[Action, Observation], ABC):
                            frame_skip=self.simulation_config.frame_skip,
                            gravity=self.simulation_config.gravity)
         self.scene = self.load_scene(self.bullet, self.model_path, self.simulation_config)
+        self.debug_id = self.bullet.addUserDebugText(text='',
+                                                     textPosition=self.render_config.debug_position,
+                                                     textColorRGB=self.render_config.debug_color,
+                                                     textSize=self.render_config.debug_size)
 
         self.world_index += 1
         self.step_index = 0
@@ -109,7 +126,7 @@ class BulletEnv(gym.Env, Generic[Action, Observation], ABC):
             body_item = Item(bullet,
                              name=body_info.body_name.decode("utf8"),
                              body_id=body_id,
-                             link_index=None)
+                             link_index=-1)
 
             scene.add_item(body_item)
 
@@ -173,20 +190,31 @@ class BulletEnv(gym.Env, Generic[Action, Observation], ABC):
                 nearVal=self.render_config.projection_near,
                 farVal=self.render_config.projection_far)
 
-            (_, _, rgb_pixels, _, _) = self.bullet.getCameraImage(
+            camera_image = CameraImage(*self.bullet.getCameraImage(
                 width=self.render_config.render_width,
                 height=self.render_config.render_height,
                 viewMatrix=view_matrix,
                 projectionMatrix=proj_matrix,
-                renderer=pybullet.ER_BULLET_HARDWARE_OPENGL)
+                lightDirection=self.render_config.light_direction,
+                lightColor=self.render_config.light_color,
+                lightDistance=self.render_config.light_distance,
+                lightAmbientCoeff=self.render_config.light_ambient,
+                lightDiffuseCoeff=self.render_config.light_diffuse,
+                lightSpecularCoeff=self.render_config.light_specular,
+                shadow=self.render_config.light_shadows,
+                renderer=pybullet.ER_TINY_RENDERER))
 
-            return np.array(rgb_pixels)[:, :, :3]
+            return np.array(camera_image.rgb_pixels)[:, :, :3]
         else:
             raise AssertionError(f'Render mode "{mode}" is not supported')
 
     def reset(self) -> Observation:
-        self.reset_simulator()
-        self.reset_world()
+        success = False
+
+        while not success:
+            self.reset_simulator()
+            success = self.reset_world()
+
         return self.observe()
 
     def step(self, action: Action) -> Tuple[Observation, float, bool, Dict]:
@@ -196,8 +224,16 @@ class BulletEnv(gym.Env, Generic[Action, Observation], ABC):
         observation = self.observe()
         return observation, reward, done, info
 
+    def update_debug(self, text: str):
+        self.debug_id = self.bullet.addUserDebugText(text=text,
+                                                     textPosition=self.render_config.debug_position,
+                                                     textColorRGB=self.render_config.debug_color,
+                                                     textSize=self.render_config.debug_size,
+                                                     replaceItemUniqueId=self.debug_id)
+
+
     @abstractmethod
-    def reset_world(self):
+    def reset_world(self) -> bool:
         pass
 
     @abstractmethod

@@ -26,49 +26,99 @@
 
     <link name="world"/>
 
+    <link name="ground">
+        <visual>
+            <origin rpy="0 0 0" xyz="0 0 -0.1"/>
+            <geometry>
+                <box size="6 6 0.2"/>
+            </geometry>
+            <material name="ground_mat"/>
+        </visual>
+
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 -0.1"/>
+            <geometry>
+                <box size="6 6 0.2"/>
+            </geometry>
+        </collision>
+
+        <inertial>
+            <mass value="10.0"/>
+            <inertia ixx="10.0" ixy="0.0" ixz="0.0" iyy="10.0" iyz="0.0" izz="10.0"/>
+        </inertial>
+    </link>
+
     <link name="robot:base">
         <inertial>
             <mass value="1.0"/>
-           <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
         </inertial>
     </link>
 
     <link name="robot:rotator1">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 0.5"/>
+            <origin rpy="0 0 0" xyz="0 0 0.05"/>
             <geometry>
-                <cylinder radius="4" length="1"/>
+                <cylinder radius="0.4" length="0.1"/>
             </geometry>
             <material name="rotator_mat"/>
         </visual>
+
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0.05"/>
+            <geometry>
+                <cylinder radius="0.4" length="0.1"/>
+            </geometry>
+        </collision>
+
         <inertial>
             <mass value="1.0"/>
-           <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
         </inertial>
     </link>
 
     <link name="robot:hinge1">
         <visual>
-            <origin rpy="0 0 0" xyz="0 0 1.5"/>
+            <origin rpy="0 0 0" xyz="0 0 0.15"/>
             <geometry>
-                <box size="2 3 1"/>
+                <box size="0.2 0.3 0.1"/>
             </geometry>
             <material name="hinge_mat"/>
         </visual>
         <visual>
-            <origin rpy="0 0 0" xyz="0 -1 3"/>
+            <origin rpy="0 0 0" xyz="0 -0.1 0.3"/>
             <geometry>
-                <box size="2 1 2"/>
+                <box size="0.2 0.1 0.2"/>
             </geometry>
             <material name="hinge_mat"/>
         </visual>
         <visual>
-            <origin rpy="0 0 0" xyz="0 1 3"/>
+            <origin rpy="0 0 0" xyz="0 0.1 0.3"/>
             <geometry>
-                <box size="2 1 2"/>
+                <box size="0.2 0.1 0.2"/>
             </geometry>
             <material name="hinge_mat"/>
         </visual>
+
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0.15"/>
+            <geometry>
+                <box size="0.2 0.3 0.1"/>
+            </geometry>
+        </collision>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 -0.1 0.3"/>
+            <geometry>
+                <box size="0.2 0.1 0.2"/>
+            </geometry>
+        </collision>
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0.1 0.3"/>
+            <geometry>
+                <box size="0.2 0.1 0.2"/>
+            </geometry>
+        </collision>
+
         <inertial>
             <mass value="1.0"/>
             <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
@@ -77,12 +127,20 @@
 
     <link name="robot:arm1">
         <visual>
-            <origin rpy="0 -1.5708 0" xyz="0 0 6"/>
+            <origin rpy="0 -1.5708 0" xyz="0 0 0.6"/>
             <geometry>
-                <box size="12 1 2"/>
+                <box size="1.2 0.1 0.2"/>
             </geometry>
             <material name="arm_mat"/>
         </visual>
+
+        <collision>
+            <origin rpy="0 -1.5708 0" xyz="0 0 0.6"/>
+            <geometry>
+                <box size="1.2 0.1 0.2"/>
+            </geometry>
+        </collision>
+
         <inertial>
             <mass value="1.0"/>
             <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
@@ -91,12 +149,20 @@
 
     <link name="robot:arm2">
         <visual>
-            <origin rpy="0 3.1416 0" xyz="4 1 0"/>
+            <origin rpy="0 3.1416 0" xyz="0.4 0.1 0"/>
             <geometry>
-                <box size="10 1 2"/>
+                <box size="1 0.1 0.2"/>
             </geometry>
             <material name="arm_mat"/>
         </visual>
+
+        <collision>
+            <origin rpy="0 3.1416 0" xyz="0.4 0.1 0"/>
+            <geometry>
+                <box size="1 0.1 0.2"/>
+            </geometry>
+        </collision>
+
         <inertial>
             <mass value="1.0"/>
             <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
@@ -105,26 +171,42 @@
 
     <link name="robot:rotator2">
         <visual>
-            <origin rpy="0 1.5708 0" xyz="9.2 0 0"/>
+            <origin rpy="0 1.5708 0" xyz="0.92 0 0"/>
             <geometry>
-                <cylinder radius="1" length="0.4"/>
+                <cylinder radius="0.1" length="0.04"/>
             </geometry>
             <material name="rotator_mat"/>
         </visual>
+
+        <collision>
+            <origin rpy="0 1.5708 0" xyz="0.92 0 0"/>
+            <geometry>
+                <cylinder radius="0.1" length="0.04"/>
+            </geometry>
+        </collision>
+
         <inertial>
             <mass value="1.0"/>
-           <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
         </inertial>
     </link>
 
     <link name="robot:hinge2">
         <visual>
-            <origin rpy="0 0 0" xyz="10.4 0 0"/>
+            <origin rpy="0 0 0" xyz="1.04 0 0"/>
             <geometry>
-                <box size="2 0.5 1"/>
+                <box size="0.2 0.05 0.1"/>
             </geometry>
             <material name="hinge_mat"/>
         </visual>
+
+        <collision>
+            <origin rpy="0 0 0" xyz="1.04 0 0"/>
+            <geometry>
+                <box size="0.2 0.05 0.1"/>
+            </geometry>
+        </collision>
+
         <inertial>
             <mass value="1.0"/>
             <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
@@ -133,19 +215,33 @@
 
     <link name="robot:arm3">
         <visual>
-            <origin rpy="0 0 0" xyz="1 0.5 0"/>
+            <origin rpy="0 0 0" xyz="0.1 0.05 0"/>
             <geometry>
-                <box size="3 0.5 1"/>
+                <box size="0.3 0.05 0.1"/>
             </geometry>
             <material name="arm_mat"/>
         </visual>
-         <visual>
-            <origin rpy="0 0 0" xyz="1 -0.5 0"/>
+        <visual>
+            <origin rpy="0 0 0" xyz="0.1 -0.05 0"/>
             <geometry>
-                <box size="3 0.5 1"/>
+                <box size="0.3 0.05 0.1"/>
             </geometry>
             <material name="arm_mat"/>
         </visual>
+
+        <collision>
+            <origin rpy="0 0 0" xyz="0.1 0.05 0"/>
+            <geometry>
+                <box size="0.3 0.05 0.1"/>
+            </geometry>
+        </collision>
+        <collision>
+            <origin rpy="0 0 0" xyz="0.1 -0.05 0"/>
+            <geometry>
+                <box size="0.3 0.05 0.1"/>
+            </geometry>
+        </collision>
+
         <inertial>
             <mass value="1.0"/>
             <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
@@ -154,33 +250,55 @@
 
     <link name="robot:rotator3">
         <visual>
-            <origin rpy="0 1.5708 0" xyz="2.6 0 0"/>
+            <origin rpy="0 1.5708 0" xyz="0.26 0 0"/>
             <geometry>
-                <cylinder radius="1" length="0.4"/>
+                <cylinder radius="0.1" length="0.04"/>
             </geometry>
             <material name="rotator_mat"/>
         </visual>
+
+        <collision>
+            <origin rpy="0 1.5708 0" xyz="0.26 0 0"/>
+            <geometry>
+                <cylinder radius="0.1" length="0.04"/>
+            </geometry>
+        </collision>
+
         <inertial>
             <mass value="1.0"/>
-           <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+            <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
         </inertial>
     </link>
 
     <link name="robot:effector">
         <visual>
-            <origin rpy="0 0 0" xyz="3.2 0 0"/>
+            <origin rpy="0 0 0" xyz="0.32 0 0"/>
             <geometry>
-                <box size="1.0 0.2 0.2"/>
+                <box size="0.1 0.02 0.02"/>
             </geometry>
             <material name="hinge_mat"/>
         </visual>
-         <visual>
-            <origin rpy="0 0 0" xyz="3.6 0 0.5"/>
+        <visual>
+            <origin rpy="0 0 0" xyz="0.36 0 0.05"/>
             <geometry>
-                <box size="0.2 0.2 2.5"/>
+                <box size="0.02 0.02 0.25"/>
             </geometry>
             <material name="hinge_mat"/>
         </visual>
+
+        <collision>
+            <origin rpy="0 0 0" xyz="0.32 0 0"/>
+            <geometry>
+                <box size="0.1 0.02 0.02"/>
+            </geometry>
+        </collision>
+        <collision>
+            <origin rpy="0 0 0" xyz="0.36 0 0.05"/>
+            <geometry>
+                <box size="0.02 0.02 0.25"/>
+            </geometry>
+        </collision>
+
         <inertial>
             <mass value="1.0"/>
             <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
@@ -191,15 +309,28 @@
         <visual>
             <origin rpy="0 0 0" xyz="0 0 0"/>
             <geometry>
-                <sphere radius="0.2"/>
+                <sphere radius="0.02"/>
             </geometry>
             <material name="pointer_mat"/>
         </visual>
+
+        <collision>
+            <origin rpy="0 0 0" xyz="0 0 0"/>
+            <geometry>
+                <sphere radius="0.02"/>
+            </geometry>
+        </collision>
+
         <inertial>
             <mass value="1.0"/>
             <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
         </inertial>
     </link>
+
+    <joint name="world_to_ground" type="fixed">
+        <parent link="world"/>
+        <child link="ground"/>
+    </joint>
 
     <joint name="world_to_base" type="fixed">
         <parent link="world"/>
@@ -222,7 +353,7 @@
         <parent link="robot:hinge1"/>
         <child link="robot:arm1"/>
         <limit lower="-1.309" upper="1.309" effort="1.0"/>
-        <origin xyz="0 0 3"/>
+        <origin xyz="0 0 0.3"/>
         <axis xyz="0 1 0"/>
     </joint>
 
@@ -230,7 +361,7 @@
         <parent link="robot:arm1"/>
         <child link="robot:arm2"/>
         <limit lower="-1.309" upper="1.309" effort="1.0"/>
-        <origin xyz="0 0 11"/>
+        <origin xyz="0 0 1.1"/>
         <axis xyz="0 1 0"/>
     </joint>
 
@@ -238,7 +369,7 @@
         <parent link="robot:arm2"/>
         <child link="robot:rotator2"/>
         <limit lower="-3.1416" upper="3.1416" effort="1.0"/>
-        <origin xyz="0 1 0"/>
+        <origin xyz="0 0.1 0"/>
         <axis xyz="1 0 0"/>
     </joint>
 
@@ -251,7 +382,7 @@
         <parent link="robot:hinge2"/>
         <child link="robot:arm3"/>
         <limit lower="-1.5708" upper="1.5708" effort="1.0"/>
-        <origin xyz="11 0 0"/>
+        <origin xyz="1.1 0 0"/>
         <axis xyz="0 1 0"/>
     </joint>
 
@@ -271,6 +402,6 @@
     <joint name="robot:effector_to_pointer" type="fixed">
         <parent link="robot:effector"/>
         <child link="robot:pointer"/>
-        <origin xyz="3.6 0 1.9"/>
+        <origin xyz="0.36 0 0.19"/>
     </joint>
 </robot>

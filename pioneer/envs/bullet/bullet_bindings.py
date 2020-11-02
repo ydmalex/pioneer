@@ -4,8 +4,8 @@ from collections import namedtuple
 # Some of the records described in the PyBullet Quickstart Guide (http://goo.gl/QwJnFX)
 
 
-BodyInfo = namedtuple('BodyInfo', ['body_name',         # bytes
-                                   'model_name'])       # bytes
+BodyInfo = namedtuple('BodyInfo', ['body_name',     # bytes
+                                   'model_name'])   # bytes
 
 
 JointInfo = namedtuple('JointInfo', ['joint_index',             # int
@@ -31,21 +31,58 @@ BasePositionAndOrientation = namedtuple('BasePositionAndOrientation', ['position
                                                                        'orientation'])      # Tuple[float, float, float, float]
 
 
-BaseVelocity = namedtuple('BaseVelocity', ['linear_velocity',        # Tuple[float, float, float]
-                                           'angular_velocity'])      # Tuple[float, float, float]
+BaseVelocity = namedtuple('BaseVelocity', ['linear_velocity',       # Tuple[float, float, float]
+                                           'angular_velocity'])     # Tuple[float, float, float]
 
 
-LinkState = namedtuple('LinkState', ['link_world_position',                     # Tuple[float, float, float]
-                                     'link_world_orientation',                  # Tuple[float, float, float, float]
-                                     'local_inertial_frame_position',           # Tuple[float, float, float]
-                                     'local_inertial_frame_orientation',        # Tuple[float, float, float, float]
-                                     'world_link_frame_position',               # Tuple[float, float, float]
-                                     'world_link_frame_orientation',            # Tuple[float, float, float, float]
-                                     'world_link_linear_velocity',              # Tuple[float, float, float]
-                                     'world_link_angular_velocity'])            # Tuple[float, float, float]
+LinkState = namedtuple('LinkState', ['link_world_position',                 # Tuple[float, float, float]
+                                     'link_world_orientation',              # Tuple[float, float, float, float]
+                                     'local_inertial_frame_position',       # Tuple[float, float, float]
+                                     'local_inertial_frame_orientation',    # Tuple[float, float, float, float]
+                                     'world_link_frame_position',           # Tuple[float, float, float]
+                                     'world_link_frame_orientation',        # Tuple[float, float, float, float]
+                                     'world_link_linear_velocity',          # Tuple[float, float, float]
+                                     'world_link_angular_velocity'])        # Tuple[float, float, float]
 
 
-JointState = namedtuple('JointState', ['joint_position',                    # float
-                                       'joint_velocity',                    # float
-                                       'joint_reaction_forces',             # Tuple[float, float, float, float, float, float]
-                                       'applied_joint_motor_torque'])       # float
+JointState = namedtuple('JointState', ['joint_position',                # float
+                                       'joint_velocity',                # float
+                                       'joint_reaction_forces',         # Tuple[float, float, float, float, float, float]
+                                       'applied_joint_motor_torque'])   # float
+
+
+ContactPoint = namedtuple('ContactPoint', ['contact_flag',              # int
+                                           'body_id_a',                 # int
+                                           'body_id_b',                 # int
+                                           'link_index_a',              # int
+                                           'link_index_b',              # int
+                                           'position_on_a',             # Tuple[float, float, float]
+                                           'position_on_b',             # Tuple[float, float, float]
+                                           'contact_normal_on_b',       # Tuple[float, float, float]
+                                           'contact_distance',          # float
+                                           'normal_force',              # float
+                                           'lateral_friction1',         # float
+                                           'lateral_friction_dir1',     # Tuple[float, float, float]
+                                           'lateral_friction2',         # float
+                                           'lateral_friction_dir2'])    # Tuple[float, float, float]
+
+
+CameraImage = namedtuple('CameraImage', ['width',                       # int
+                                         'height',                      # int
+                                         'rgb_pixels',                  # List[Tuple[float, float, float, float]]
+                                         'depth_pixels',                # List[float]
+                                         'segmentation_mask_buffer'])   # List[int]
+
+
+DynamicsInfo = namedtuple('DynamicsInfo', ['mass',                          # float
+                                           'lateral_friction',              # float
+                                           'local_inertia_diagonal',        # Tuple[float, float, float]
+                                           'local_inertial_pos',            # Tuple[float, float, float]
+                                           'local_inertial_orientation',    # Tuple[float, float, float, float]
+                                           'restitution',                   # float
+                                           'rolling_friction',              # float
+                                           'spinning_friction',             # float
+                                           'contact_damping',               # float
+                                           'contact_stiffness',             # float
+                                           'body_type',                     # int
+                                           'collision_margin'])             # float
